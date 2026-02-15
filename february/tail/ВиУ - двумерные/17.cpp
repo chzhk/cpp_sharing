@@ -2,56 +2,81 @@
 #include <iostream>
 using namespace std;
 
-// Задача 17 (доделать генератор)
+// Задача 17 
 int main() {
 	setlocale(LC_ALL, "RUS");
-	int n, count;
+	int n, count; // заводим переменные
 	// create
+	// n - количество элементов в массиве
+	// count - количество строк в данный момент в массиве
+	cout << "Введите N: ";
 	cin >> n;
 	count = n;
-	int** mas = new int* [n];
-	for (int i = 0; i < n; i++) {
-		mas[i] = new int[n];
-	}
-	for (int i = 0; i < n; i++) {
-		for (int q = 0; q < n; q++) {
-			mas[q][i] = i + 1; // подумать, как влияет изменение q и i в циклах местами
-		}
-	}
-	for (int i = 0; i < n; i++) {
-		for (int q = 0; q < n; q++) {
-			cout << mas[i][q] << " ";
-		}
-		cout << endl;
-	}
-
-	cout << "----" << endl;
-
-	for (int q = 0; q < count;) {
-		int kol = 0;
+	if (n > 0) {
+		int** mas = new int* [n]; // инициализируем двумерный массив из N строк
 		for (int i = 0; i < n; i++) {
-			if (mas[i][q] % 2 == 0) {
-				kol += 1;
-			}
+			mas[i] = new int[n]; // выделяем память для N столбцов
 		}
-		if (kol == n) {
-			for (int i2 = 0; i2 < n; i2++) {
-				for (int q2 = q; q2 < count - 1; q2++) {
-					mas[i2][q2] = mas[i2][q2 + 1];
+		srand((unsigned)time(NULL)); // начальное значение для генератора случайных чисел
+		for (int i = 0; i < n; i++) { // номер строки
+			for (int j = 0; j < n; j++) { // номер стобца (заполнение в строке)
+				mas[i][j] = rand() % 15; // заполняем элементы строк случайным образом
+			}
+			// с новым циклом осуществляется переход на новую строку
+		}
+
+		/////// МОЖНО РАСКОММЕНТИРОВАТЬ (генератор закомментировать соответственно)
+		//for (int i = 0; i < n; i++) {
+		//	for (int q = 0; q < n; q++) {
+		//		mas[q][i] = i + 1; 
+		//	}
+		//}
+
+		for (int i = 0; i < n; i++) {
+			for (int q = 0; q < n; q++) {
+				cout << mas[i][q] << "	"; // выводим получившийся массив
+			}
+			cout << endl;
+		}
+
+		cout << "----" << endl;
+
+		for (int q = 0; q < count;) { // перебираем столбцы
+			int kol = 0; // заводим счётчик чётных элементов в столбце
+			for (int i = 0; i < n; i++) { // перебираем элементы в столбце
+				if (mas[i][q] % 2 == 0) { // проверка на чётность
+					kol += 1;
 				}
 			}
-			for (int i3 = 0; i3 < count; i3++) {
-				mas[i3][count - 1] = 0;
+			if (kol == n) { // если все элемнеты в столбце чётные, то
+				for (int i2 = 0; i2 < n; i2++) { // проходимся по строкам
+					for (int q2 = q; q2 < count - 1; q2++) { // сдвигаем все столбцы влево, наползая на данный
+						mas[i2][q2] = mas[i2][q2 + 1];
+					}
+				}
+				for (int i3 = 0; i3 < n; i3++) {
+					mas[i3][count - 1] = 0; // обнуляем последний столбец
+				}
+				count -= 1;
 			}
-			count -= 1;
+			else q += 1;
 		}
-		else q += 1;
-	}
 
-	for (int i = 0; i < n; i++) {
-		for (int q = 0; q < count; q++) {
-			cout << mas[i][q] << " ";
+		cout << "Итог: \n";
+		for (int i = 0; i < n; i++) {
+			for (int q = 0; q < count; q++) {
+				cout << mas[i][q] << "	";
+			}
+			cout << endl;
 		}
-		cout << endl;
+		for (int i = 0; i < n; i++) {
+			delete[] mas[i];
+		}
+		delete[] mas;
 	}
+	else {
+		cout << "---\nВыполните программу ещё раз и введите положительное число строк.\n";
+	}
+	system("pause");
+	return 0;
 }
